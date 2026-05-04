@@ -1,3 +1,18 @@
+export function getSubjectStats(sessions) {
+  const map = {}
+  sessions.forEach(s => {
+    const name = s.subject || '(sem matéria)'
+    if (!map[name]) map[name] = { hours: 0, questions: 0, sessions: 0, lastDate: '' }
+    map[name].hours     += Number(s.hours)
+    map[name].questions += Number(s.questions)
+    map[name].sessions  += 1
+    if (s.date > map[name].lastDate) map[name].lastDate = s.date
+  })
+  return Object.entries(map)
+    .map(([name, v]) => ({ name, ...v }))
+    .sort((a, b) => b.hours - a.hours)
+}
+
 export function fmtHours(decimal) {
   const h = Math.floor(decimal);
   const m = Math.round((decimal - h) * 60);
@@ -38,7 +53,7 @@ export function getStreak(sessions) {
   if (dates[0] != today && dates[0] != yesterday) return 0;
   let streak = 1;
   for (let i = 0; i < dates.length - 1; i++) {
-    const diff = new Date(dates[i] - new Date(dates[i + 1]));
+    const diff = new Date(dates[i]) - new Date(dates[i + 1]);
     if (diff < 86400000) streak++;
     else break;
   }

@@ -2,17 +2,16 @@ import { useState } from 'react'
 import { useStudyData } from './hooks/useStudyData'
 import { Dashboard }    from './components/Dashboard'
 import { InputForm }    from './components/InputForm'
+import { ImportCSV }    from './components/ImportCSV'
 import { SessionList }  from './components/SessionList'
 import { SectionTitle } from './components/SectionTitle'
 import './App.css'
 
-const TABS = ['Dashboard', 'Registrar',
-  'Histórico', 'Metas'
-]
+const TABS = ['Dashboard', 'Registrar', 'Histórico', 'Matérias', 'Metas']
 
 export default function App() {
   const [tab, setTab] = useState('Dashboard')
-  const { sessions, goals, addSession, deleteSession, updateGoals } = useStudyData()
+  const { sessions, goals, subjects, addSession, addSessions, deleteSession, updateGoals, addSubject, removeSubject } = useStudyData()
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -54,7 +53,11 @@ export default function App() {
         {tab === 'Registrar' && (
           <div>
             <SectionTitle>nova sessão</SectionTitle>
-            <InputForm onAdd={addSession} />
+            <InputForm onAdd={addSession} subjects={subjects} />
+            <div className="mt-6">
+              <SectionTitle>importar planilha</SectionTitle>
+              <ImportCSV onImport={addSessions} subjects={subjects} />
+            </div>
             <div className="mt-6">
               <SectionTitle>últimas sessões</SectionTitle>
               <SessionList sessions={sessions.slice(0, 5)} onDelete={deleteSession} />
@@ -69,11 +72,70 @@ export default function App() {
           </div>
         )}
 
+        {tab === 'Matérias' && (
+          <SubjectsEditor subjects={subjects} onAdd={addSubject} onRemove={removeSubject} sessions={sessions} />
+        )}
+
         {tab === 'Metas' && (
           <GoalsEditor goals={goals} onSave={updateGoals} />
         )}
 
       </div>
+    </div>
+  )
+}
+
+function SubjectsEditor({ subjects, onAdd, onRemove, sessions }) {
+  const [input, setInput] = useState('')
+
+  function handleAdd(e) {
+    e.preventDefault()
+    onAdd(input)
+    setInput('')
+  }
+
+  return (
+    <div>
+      <SectionTitle>cadastrar matéria</SectionTitle>
+      <form onSubmit={handleAdd} className="flex gap-2 mb-6">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="Nome da matéria"
+          className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+        />
+        <button
+          type="submit"
+          className="bg-amber-400 text-zinc-900 font-semibold text-sm px-5 py-2 rounded-lg hover:bg-amber-300 transition-colors"
+        >
+          + Adicionar
+        </button>
+      </form>
+
+      <SectionTitle>matérias cadastradas ({subjects.length})</SectionTitle>
+      {subjects.length === 0 ? (
+        <p className="text-sm text-zinc-600 text-center py-8">Nenhuma matéria cadastrada.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {subjects.map(s => {
+            const count = sessions.filter(ss => ss.subject === s).length
+            return (
+              <div key={s} className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex items-center justify-between">
+                <span className="text-sm text-zinc-200">{s}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-zinc-500 font-mono">{count} sessões</span>
+                  <button
+                    onClick={() => onRemove(s)}
+                    className="text-zinc-600 hover:text-red-400 transition-colors text-sm px-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

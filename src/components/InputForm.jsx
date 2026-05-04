@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-export function InputForm({ onAdd }) {
+export function InputForm({ onAdd, subjects = [] }) {
   const today = new Date().toISOString().slice(0, 10);
-  const [form, setForm] = useState({ date: today, hours: "", minutes: "", questions: "" });
+  const [form, setForm] = useState({ date: today, hours: "", minutes: "", questions: "", subject: "" });
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -11,8 +11,9 @@ export function InputForm({ onAdd }) {
       date: form.date,
       hours: (Number(form.hours) || 0) + (Number(form.minutes) || 0) / 60,
       questions: Number(form.questions) || 0,
+      subject: form.subject || null,
     });
-    setForm({ date: today, hours: "", minutes: "", questions: "" });
+    setForm({ date: today, hours: "", minutes: "", questions: "", subject: form.subject });
   }
 
   return (
@@ -20,7 +21,18 @@ export function InputForm({ onAdd }) {
       onSubmit={handleSubmit}
       className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
     >
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-zinc-500 uppercase tracking-widest">Matéria</label>
+          <select
+            value={form.subject}
+            onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
+            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-amber-400"
+          >
+            <option value="">— nenhuma —</option>
+            {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs text-zinc-500 uppercase tracking-widest">
             Data

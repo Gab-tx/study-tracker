@@ -2,6 +2,7 @@ import { MetricCard } from './MetricCard'
 import { GoalCard }   from './GoalCard'
 import { WeekChart }  from './WeekChart'
 import { SectionTitle } from './SectionTitle'
+import { SubjectStats } from './SubjectStats'
 import {
   getTotalHours, getTotalQuestions, getStudyDays,
   getAverageHours, getAverageQuestions, getStreak,
@@ -56,6 +57,8 @@ export function Dashboard({ sessions, goals }) {
           </p>
         </div>
       </div>
+      <SectionTitle>por matéria</SectionTitle>
+      <SubjectStats sessions={sessions} />
     </div>
   )
 }
