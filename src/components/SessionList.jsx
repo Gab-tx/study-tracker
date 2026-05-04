@@ -1,3 +1,5 @@
+import { fmtHours } from '../utils/calculations'
+
 export function SessionList({ sessions, onDelete }) {
   if (!sessions.length) {
     return (
@@ -22,7 +24,7 @@ export function SessionList({ sessions, onDelete }) {
             </span>
             <div className="flex items-center gap-3">
               <span className="bg-amber-400/10 text-amber-400 font-mono text-xs font-semibold px-3 py-1 rounded-full">
-                {Number(s.hours).toFixed(1)}h
+                {fmtHours(Number(s.hours))}
               </span>
               <span className="bg-blue-400/10 text-blue-400 font-mono text-xs font-semibold px-3 py-1 rounded-full">
                 {s.questions} questões

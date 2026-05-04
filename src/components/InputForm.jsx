@@ -2,17 +2,17 @@ import { useState } from "react";
 
 export function InputForm({ onAdd }) {
   const today = new Date().toISOString().slice(0, 10);
-  const [form, setForm] = useState({ date: today, hours: "", questions: "" });
+  const [form, setForm] = useState({ date: today, hours: "", minutes: "", questions: "" });
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!form.hours && !form.questions) return;
+    if (!form.hours && !form.minutes && !form.questions) return;
     onAdd({
       date: form.date,
-      hours: Number(form.hours) || 0,
+      hours: (Number(form.hours) || 0) + (Number(form.minutes) || 0) / 60,
       questions: Number(form.questions) || 0,
     });
-    setForm({ date: today, hours: "", questions: "" });
+    setForm({ date: today, hours: "", minutes: "", questions: "" });
   }
 
   return (
@@ -36,16 +36,26 @@ export function InputForm({ onAdd }) {
           <label className="text-xs text-zinc-500 uppercase tracking-widest">
             Horas
           </label>
-          <input
-            type="number"
-            placeholder="ex: 2.5"
-            value={form.hours}
-            min="0"
-            max="24"
-            step="0.25"
-            onChange={(e) => setForm((p) => ({ ...p, hours: e.target.value }))}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-amber-400"
-          />
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="h"
+              value={form.hours}
+              min="0"
+              max="24"
+              onChange={(e) => setForm((p) => ({ ...p, hours: e.target.value }))}
+              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-amber-400 w-full"
+            />
+            <input
+              type="number"
+              placeholder="min"
+              value={form.minutes}
+              min="0"
+              max="59"
+              onChange={(e) => setForm((p) => ({ ...p, minutes: e.target.value }))}
+              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-amber-400 w-full"
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs text-zinc-500 uppercase tracking-widest">

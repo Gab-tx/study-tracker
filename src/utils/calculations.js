@@ -1,3 +1,11 @@
+export function fmtHours(decimal) {
+  const h = Math.floor(decimal);
+  const m = Math.round((decimal - h) * 60);
+  if (h === 0) return `${m}min`;
+  if (m === 0) return `${h}h`;
+  return `${h}h${String(m).padStart(2, '0')}min`;
+}
+
 export function getTotalHours(sessions) {
   return sessions.reduce((acc, s) => acc + Number(s.hours), 0);
 }
