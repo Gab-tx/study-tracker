@@ -5,7 +5,7 @@ import { SectionTitle } from './SectionTitle'
 import { SubjectStats } from './SubjectStats'
 import {
   getTotalHours, getTotalQuestions, getStudyDays,
-  getAverageHours, getAverageQuestions, getStreak,
+  getAverageHours, getAverageQuestions,
   getAproveitamento, getWeeklyHours, getMonthlyHours, getBestDay, fmtHours
 } from '../utils/calculations'
 
@@ -13,7 +13,6 @@ export function Dashboard({ sessions, goals }) {
   const totalH  = getTotalHours(sessions)
   const totalQ  = getTotalQuestions(sessions)
   const totalD  = getStudyDays(sessions)
-  const streak  = getStreak(sessions)
   const avgH    = getAverageHours(sessions)
   const avgQ    = getAverageQuestions(sessions)
   const best    = getBestDay(sessions)
@@ -21,11 +20,10 @@ export function Dashboard({ sessions, goals }) {
   return (
     <div>
       <SectionTitle>métricas principais</SectionTitle>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
         <MetricCard icon="⏱️" label="Horas Estudadas" value={fmtHours(totalH)} sub={`média: ${fmtHours(avgH)}/dia`} color="amber" />
         <MetricCard icon="📅" label="Dias Estudados"  value={totalD} sub={`aproveitamento: ${getAproveitamento(sessions)}%`} color="green" />
-        <MetricCard icon="🧠" label="Questões"        value={totalQ} sub={`média: ${avgQ.toFixed(0)}/dia`} color="blue" />
-        <MetricCard icon="🔥" label="Streak"          value={streak} sub="dias consecutivos" color="red" />
+        <MetricCard icon="🧠" label="Questões" value={totalQ} sub={`média: ${avgQ.toFixed(0)}/dia`} color="blue" />
       </div>
 
       <SectionTitle>metas</SectionTitle>

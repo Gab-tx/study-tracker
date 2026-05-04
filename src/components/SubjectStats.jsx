@@ -5,6 +5,7 @@ const COLORS = ['#f5a623', '#4ade80', '#60a5fa', '#f472b6', '#a78bfa', '#34d399'
 
 export function SubjectStats({ sessions }) {
   const stats = getSubjectStats(sessions)
+  const yAxisWidth = Math.min(180, Math.max(80, ...stats.map(s => s.name.length * 7)))
   if (!stats.length) return (
     <div className="text-center py-10 text-zinc-600 text-sm">Nenhuma sessão com matéria registrada.</div>
   )
@@ -16,7 +17,7 @@ export function SubjectStats({ sessions }) {
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={stats} barSize={28} layout="vertical">
             <XAxis type="number" tick={{ fill: '#52525b', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis type="category" dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={false} tickLine={false} width={100} />
+            <YAxis type="category" dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 12 }} axisLine={false} tickLine={false} width={yAxisWidth} />
             <Tooltip
               contentStyle={{ background: '#18181b', border: '1px solid #3f3f46', borderRadius: 8 }}
               labelStyle={{ color: '#a1a1aa', fontSize: 11 }}

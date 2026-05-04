@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { parseCSV } from '../utils/parseCSV'
 
-export function ImportCSV({ onImport, subjects = [] }) {
+export function ImportCSV({ onImport, onAddSubject, subjects = [] }) {
   const inputRef = useRef()
   const [result, setResult] = useState(null)
 
@@ -12,9 +12,10 @@ export function ImportCSV({ onImport, subjects = [] }) {
     const reader = new FileReader()
     reader.onload = ev => {
       try {
-        const { sessions, errors } = parseCSV(ev.target.result, subjects)
+        const { sessions, newSubjects, errors } = parseCSV(ev.target.result)
+        newSubjects.forEach(s => onAddSubject(s))
         if (sessions.length) onImport(sessions)
-        setResult({ count: sessions.length, errors })
+        setResult({ count: sessions.length, skipped: sessions.length === 0 && !errors.length, newSubjects, errors })
       } catch (err) {
         setResult({ count: 0, errors: [err.message] })
       }
@@ -43,6 +44,9 @@ export function ImportCSV({ onImport, subjects = [] }) {
         <div className="mt-3 space-y-1">
           {result.count > 0 && (
             <p className="text-xs text-green-400">{result.count} sessão(ões) importada(s) com sucesso.</p>
+          )}
+          {result.newSubjects?.length > 0 && (
+            <p className="text-xs text-amber-400">{result.newSubjects.length} matéria(s) cadastrada(s) automaticamente: {result.newSubjects.join(', ')}</p>
           )}
           {result.errors.map((err, i) => (
             <p key={i} className="text-xs text-red-400">{err}</p>

@@ -56,7 +56,7 @@ export default function App() {
             <InputForm onAdd={addSession} subjects={subjects} />
             <div className="mt-6">
               <SectionTitle>importar planilha</SectionTitle>
-              <ImportCSV onImport={addSessions} subjects={subjects} />
+              <ImportCSV onImport={addSessions} onAddSubject={addSubject} subjects={subjects} />
             </div>
             <div className="mt-6">
               <SectionTitle>últimas sessões</SectionTitle>

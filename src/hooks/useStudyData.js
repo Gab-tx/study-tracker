@@ -44,12 +44,14 @@ export function useStudyData() {
     }
 
     function addSessions(newSessions) {
-        setData(prev => ({
-            ...prev,
-            sessions: [...prev.sessions, ...newSessions].sort((a, b) =>
-                b.date.localeCompare(a.date)
-            )
-        }))
+        setData(prev => {
+            const existingKeys = new Set(prev.sessions.map(s => `${s.date}|${s.subject ?? ''}`))
+            const filtered = newSessions.filter(s => !existingKeys.has(`${s.date}|${s.subject ?? ''}`))
+            return {
+                ...prev,
+                sessions: [...prev.sessions, ...filtered].sort((a, b) => b.date.localeCompare(a.date))
+            }
+        })
     }
 
     function deleteSession(index) {

@@ -1,4 +1,4 @@
-export function parseCSV(text, subjects = []) {
+export function parseCSV(text) {
   const [header, ...rows] = text.trim().split('\n')
   const cols = header.split(',').map(c => c.trim().toLowerCase())
 
@@ -7,6 +7,7 @@ export function parseCSV(text, subjects = []) {
     throw new Error(`Colunas esperadas: ${required.join(', ')}`)
 
   const sessions = []
+  const newSubjects = new Set()
   const errors = []
 
   rows.forEach((row, i) => {
@@ -23,13 +24,10 @@ export function parseCSV(text, subjects = []) {
       errors.push(`Linha ${i + 2}: data inválida "${date}" (use AAAA-MM-DD)`)
       return
     }
-    if (subjects.length && !subjects.includes(subject)) {
-      errors.push(`Linha ${i + 2}: matéria "${subject}" não cadastrada`)
-      return
-    }
 
+    if (subject) newSubjects.add(subject)
     sessions.push({ date, hours, questions, subject })
   })
 
-  return { sessions, errors }
+  return { sessions, newSubjects: [...newSubjects], errors }
 }
